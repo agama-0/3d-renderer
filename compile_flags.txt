@@ -1,0 +1,2 @@
+-I./external/glfw/include
+-I./external/glad/include
