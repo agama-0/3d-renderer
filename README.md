@@ -21,8 +21,8 @@
 ## RoadMap
 
 - **Make rectangle rotate in 3d with camera system**
-  - [ ] Write the boiler code for wgpu
-  - [ ] Create Basic shader
+  - [x] Write the boiler code for opengl
+  - [x] Create Basic shader
   - [ ] Create VBO for triangle and draw two of them
   - [ ] Implement Camera System
   - [ ] Rotate that shit
