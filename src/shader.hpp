@@ -4,7 +4,8 @@
 #include <vector>
 namespace Agama {
 
-class Shader {
+class Shader
+{
     private:
         GLuint shader;
     public:
@@ -13,7 +14,8 @@ class Shader {
     GLuint getShader();
 };
 
-class ShaderProgram {
+class ShaderProgram
+{
     private:
         GLuint program;
     public:

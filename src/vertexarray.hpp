@@ -8,7 +8,8 @@ struct Vertex {
     float position[3];
     float color[3];
 };
-class VertexArray {
+class VertexArray
+{
     private:
         std::vector<Vertex> data;
         GLuint vao,vbo;

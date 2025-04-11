@@ -18,7 +18,8 @@ ShaderProgram::ShaderProgram(const char* vs_path, const char* fs_path)
 
     glLinkProgram(program);
     glGetProgramiv(program, GL_LINK_STATUS, &success);
-    if(!success) {
+    if(!success)
+    {
         glGetProgramInfoLog(program, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER_PROGRAM::LINKING_FAILED\n\tLOGS: " << infoLog << "\n";
     }
