@@ -1,6 +1,6 @@
 #include "vertexarray.hpp"
 #include <iostream>
-using namespace Agama;
+using namespace agama;
 VertexArray::VertexArray() : data()
 {
     glGenVertexArrays(1,&vao);

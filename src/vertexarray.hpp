@@ -2,11 +2,11 @@
 #define VertexArray_HPP
 #include <glad/glad.h>
 #include <vector>
-namespace Agama {
-
+#include "alm.hpp"
+namespace agama {
 struct Vertex {
-    float position[3];
-    float color[3];
+    alm::vec3 position;
+    alm::vec3 color;
 };
 class VertexArray
 {
@@ -23,5 +23,5 @@ class VertexArray
     unsigned int count();
 };
 
-} // namespace Agama
+} // namespace agama
 #endif // VertexArray_HPP

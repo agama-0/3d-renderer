@@ -4,7 +4,7 @@
 #include <vector>
 #include "shader.hpp"
 #include "vertexarray.hpp"
-namespace Agama {
+namespace agama {
 
 enum DrawCallVariant {
     DRAW_ARRAYS_TRIANGLE
@@ -18,5 +18,5 @@ struct DrawCall {
 
 void draw(struct DrawCall drawcall);
 
-} // namespace Agama
+} // namespace agama
 #endif // DrawCall_HPP

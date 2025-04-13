@@ -1,8 +1,8 @@
 #include "drawcall.hpp"
-using namespace Agama;
+using namespace agama;
 
 void
-Agama::draw(struct DrawCall drawcall)
+agama::draw(struct DrawCall drawcall)
 {
     if (drawcall.variant == DRAW_ARRAYS_TRIANGLE)
     {

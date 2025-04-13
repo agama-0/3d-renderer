@@ -23,6 +23,6 @@
 - **Make rectangle rotate in 3d with camera system**
   - [x] Write the boiler code for opengl
   - [x] Create Basic shader
-  - [ ] Create VBO for triangle and draw two of them
-  - [ ] Implement Camera System
-  - [ ] Rotate that shit
+  - [x] Create VBO for triangle and draw two of them
+  - [x] Implement Camera System
+  - [x] Rotate that shit

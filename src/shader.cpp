@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 
-using namespace Agama;
+using namespace agama;
 
 int success;
 char infoLog[512];
@@ -40,6 +40,59 @@ void
 ShaderProgram::unbind()
 {
     glUseProgram(0);
+}
+
+
+void
+ShaderProgram::set_bool(const char* key, bool value)
+{
+    glUniform1i(glGetUniformLocation(program, key), (int)value);
+}
+void
+ShaderProgram::set_int(const char* key, int value)
+{
+    glUniform1i(glGetUniformLocation(program, key), value);
+}
+void
+ShaderProgram::set_float(const char* key, float value)
+{
+    glUniform1f(glGetUniformLocation(program, key), value);
+}
+void
+ShaderProgram::set_vec2(const char* key, const alm::vec2& value)
+{
+    glUniform2fv(glGetUniformLocation(program, key), 1, &value.x);
+}
+void
+ShaderProgram::set_vec2(const char* key, float x, float y)
+{
+    glUniform2f(glGetUniformLocation(program, key), x, y);
+}
+void
+ShaderProgram::set_vec3(const char* key, const alm::vec3& value)
+{
+    glUniform3fv(glGetUniformLocation(program, key), 1, &value.x);
+}
+void
+ShaderProgram::set_vec3(const char* key, float x, float y, float z)
+{
+    glUniform3f(glGetUniformLocation(program, key), x, y, z);
+}
+void
+ShaderProgram::set_vec4(const char* key, const alm::vec4& value)
+{
+    glUniform4fv(glGetUniformLocation(program, key), 1, &value.x);
+}
+void
+ShaderProgram::set_vec4(const char* key, float x, float y, float z, float w)
+{
+    glUniform4f(glGetUniformLocation(program, key), x, y, z, w);
+}
+
+void
+ShaderProgram::set_mat4(const char* key, const alm::mat4& value)
+{
+    glUniformMatrix4fv(glGetUniformLocation(program, key), 1, GL_FALSE, &value.a11);
 }
 
 Shader::Shader(const char* path,GLenum shader_type)
