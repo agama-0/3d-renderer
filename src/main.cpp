@@ -15,12 +15,13 @@ void scroll_callback(GLFWwindow* window, double sx, double sy);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow *window);
 void set_cursor_pos_callback(GLFWwindow* window, double mx, double my);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int window_width = INITIAL_WIDTH, window_height = INITIAL_HEIGHT;
 Camera cam;
+int enable_cursor_movement = false;
 int main ()
 {
-
     glfwInit();
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -36,7 +37,7 @@ int main ()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorEnterCallback(window,cursor_enter_callback);
     glfwSetScrollCallback(window, scroll_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetKeyCallback(window, key_callback);
 
     VertexArray va;
     // triangle 1
@@ -51,7 +52,6 @@ int main ()
     ShaderProgram program("assets/basic_vert.glsl","assets/basic_frag.glsl");
 
     struct DrawCall drawcall = {.variant=DRAW_ARRAYS_TRIANGLE, .va=&va, .program=&program};
-
     glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window))
@@ -89,10 +89,6 @@ double prev_mx, prev_my;
 bool first_mouse = true;
 void process_input(GLFWwindow *window)
 {
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, true);
-    }
     // WSAD
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
@@ -111,17 +107,38 @@ void process_input(GLFWwindow *window)
         cam.move_right(1, CAMERA_DEFAULT_SPEED / 60.0f);
     }
     // cursor move
-    double pmx = window_width/2.f, pmy = window_height/2.f;
-    if (first_mouse)
+    if (enable_cursor_movement)
     {
+        double pmx = window_width/2.f, pmy = window_height/2.f;
+        if (first_mouse)
+        {
+            glfwSetCursorPos(window, pmx, pmy);
+            first_mouse = false;
+        }
+        double mx, my;
+        glfwGetCursorPos(window, &mx, &my);
+        cam.rotate_yaw(mx - pmx, 0.1);
+        cam.rotate_pitch(pmy - my, 0.1);
         glfwSetCursorPos(window, pmx, pmy);
-        first_mouse = false;
     }
-    double mx, my;
-    glfwGetCursorPos(window, &mx, &my);
-    cam.rotate_yaw(mx - pmx, 0.1);
-    cam.rotate_pitch(pmy - my, 0.1);
-    glfwSetCursorPos(window, pmx, pmy);
+}
+
+// for only key "down" events
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+
+    if (key == GLFW_KEY_P && action == GLFW_PRESS)
+    {
+        enable_cursor_movement = !enable_cursor_movement;
+        if (enable_cursor_movement)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        else
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
 }
 
 void cursor_enter_callback(GLFWwindow* window, int entered)
@@ -136,6 +153,8 @@ void scroll_callback(GLFWwindow* window, double sx, double sy)
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+    window_width = width;
+    window_height = height;
     cam.set_aspect(width, height);
     glViewport(0, 0, width, height);
 }
