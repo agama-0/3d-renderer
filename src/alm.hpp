@@ -227,7 +227,6 @@ inline mat4 translate(vec3 t)
 }
 
 // reference: https://en.wikipedia.org/wiki/Rotation_matrix
-// FIXME: it visually gives weird output, fix it
 inline mat4 rotate(float theta, vec3 axis)
 {
     mat4 r;
@@ -240,13 +239,13 @@ inline mat4 rotate(float theta, vec3 axis)
     r.a13 = u.x * u.z * (1 - c) + u.y * s;
     r.a14 = 0;
 
-    r.a21 = u.z * u.y * (1 - c) + u.z * s;
+    r.a21 = u.x * u.y * (1 - c) + u.z * s;
     r.a22 = sq(u.y) * (1 - c) + c;
-    r.a23 = u.y + u.z * (1 - c) - u.x * s;
+    r.a23 = u.y * u.z * (1 - c) - u.x * s;
     r.a24 = 0;
 
     r.a31 = u.x * u.z * (1 - c) - u.y * s;
-    r.a32 = u.y + u.z * (1 - c) + u.x * s;
+    r.a32 = u.y * u.z * (1 - c) + u.x * s;
     r.a33 = sq(u.z) * (1 - c) + c;
     r.a34 = 0;
 
@@ -257,8 +256,41 @@ inline mat4 rotate(float theta, vec3 axis)
 
     return r;
 }
+inline mat4 rotate_x(float theta)
+{
+    float c = cosf(theta),
+    s = sinf(theta);
+    return {
+        1, 0,  0, 0,
+        0, c, -s, 0,
+        0, s,  c, 0,
+        0, 0,  0, 1,
+    };
+}
 
-// TODO: rotate_x, rotate_y, rotate_z function
+inline mat4 rotate_y(float theta)
+{
+    float c = cosf(theta),
+    s = sinf(theta);
+    return {
+         c, 0, s, 0,
+         0, 1, 0, 0,
+        -s, 0, c, 0,
+         0, 0, 0, 1,
+    };
+}
+
+inline mat4 rotate_z(float theta)
+{
+    float c = cosf(theta),
+    s = sinf(theta);
+    return {
+        c, -s, 0, 0,
+        s,  c, 0, 0,
+        0,  0, 1, 0,
+        0,  0, 0, 1,
+    };
+}
 
 inline mat4 scale(vec3 s)
 {
@@ -303,8 +335,6 @@ inline mat4 perspective(float fov, float aspect, float near, float far)
         0,0,e,0
     };
 }
-
-
 
 } // namespace alm
 #endif // ALM_HPP

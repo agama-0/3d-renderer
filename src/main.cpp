@@ -5,31 +5,38 @@
 #include "vertexarray.hpp"
 #include "shader.hpp"
 #include "drawcall.hpp"
+#include "camera.hpp"
 #include "alm.hpp"
 using namespace agama;
 using namespace alm;
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-void processInput(GLFWwindow *window)
-{
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, true);
-}
+
+void cursor_enter_callback(GLFWwindow* window, int entered);
+void scroll_callback(GLFWwindow* window, double sx, double sy);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void process_input(GLFWwindow *window);
+void set_cursor_pos_callback(GLFWwindow* window, double mx, double my);
+
+int window_width = INITIAL_WIDTH, window_height = INITIAL_HEIGHT;
+Camera cam;
 int main ()
 {
+
     glfwInit();
+    glfwDefaultWindowHints();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,GL_TRUE);
-    GLFWwindow* window = glfwCreateWindow(INITIAL_WIDTH, INITIAL_HEIGHT, "Agama Renderer", NULL, NULL);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,GL_TRUE);
+
+    GLFWwindow* window = glfwCreateWindow(window_width, window_height, "Agama Renderer", NULL, NULL);
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-    glViewport(0, 0, INITIAL_WIDTH, INITIAL_HEIGHT);
+    glViewport(0, 0, window_width, window_height);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorEnterCallback(window,cursor_enter_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     VertexArray va;
     // triangle 1
@@ -47,13 +54,10 @@ int main ()
 
     glEnable(GL_DEPTH_TEST);
 
-    int wx, wy;
-
     while (!glfwWindowShouldClose(window))
     {
-
-        glfwGetWindowSize(window, &wx, &wy);
-        processInput(window);
+        cam.set_aspect(window_width, window_height);
+        process_input(window);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -63,12 +67,12 @@ int main ()
             0,0,1,0,
             0,0,0,1,
         };
-        model =  translate({0,0,0}) * model;
-        model = rotate(deg2rad(glfwGetTime() * 30 * PI),{1, 0, 0}) * model;
+        model =  translate({0.3,0,0}) * model;
+        // model = rotate(deg2rad(glfwGetTime() * 30 * PI),{1, 1, 1}) * model;
+        model = rotate_z(deg2rad(glfwGetTime() * 30 * PI)) * model;
         model =  scale({0.25, 0.25, 0.25}) * model;
-
-        mat4 view = look_at({1,0,1}, {0,0,0}, {0,1,0});
-        mat4 projection = perspective(deg2rad(45), (float)wx / wy, 0.01, 100);
+        mat4 view = cam.get_view();
+        mat4 projection = cam.get_projection();
 
         program.bind();
         program.set_mat4("model", model);
@@ -79,4 +83,59 @@ int main ()
         glfwPollEvents();
     }
     return 0;
+}
+
+double prev_mx, prev_my;
+bool first_mouse = true;
+void process_input(GLFWwindow *window)
+{
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
+    // WSAD
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        cam.move_forward(1, CAMERA_DEFAULT_SPEED / 60.0f);
+    }
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        cam.move_forward(1, -CAMERA_DEFAULT_SPEED / 60.0f);
+    }
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        cam.move_right(1, -CAMERA_DEFAULT_SPEED / 60.0f);
+    }
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        cam.move_right(1, CAMERA_DEFAULT_SPEED / 60.0f);
+    }
+    // cursor move
+    double pmx = window_width/2.f, pmy = window_height/2.f;
+    if (first_mouse)
+    {
+        glfwSetCursorPos(window, pmx, pmy);
+        first_mouse = false;
+    }
+    double mx, my;
+    glfwGetCursorPos(window, &mx, &my);
+    cam.rotate_yaw(mx - pmx, 0.1);
+    cam.rotate_pitch(pmy - my, 0.1);
+    glfwSetCursorPos(window, pmx, pmy);
+}
+
+void cursor_enter_callback(GLFWwindow* window, int entered)
+{
+    first_mouse = entered;
+}
+
+void scroll_callback(GLFWwindow* window, double sx, double sy)
+{
+    cam.set_zoom(sy);
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    cam.set_aspect(width, height);
+    glViewport(0, 0, width, height);
 }
