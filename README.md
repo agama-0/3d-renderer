@@ -19,9 +19,8 @@
 ```
 
 ## Output Recording
-<video controls>
-    <source src="./output/recording.webm" type="video/webm">
-</video>
+
+![](output/recording.gif)
 
 
 ## RoadMap
