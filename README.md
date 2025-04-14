@@ -18,6 +18,12 @@
 ./run.sh
 ```
 
+## Output Recording
+<video controls>
+    <source src="./output/recording.webm" type="video/webm">
+</video>
+
+
 ## RoadMap
 
 - **Make rectangle rotate in 3d with camera system**
@@ -26,3 +32,9 @@
   - [x] Create VBO for triangle and draw two of them
   - [x] Implement Camera System
   - [x] Rotate that shit
+  - [ ] Texture (UV coords and glTexture2d)
+  - [ ] Way to dynamically spawn cubes on mouse click
+  - [ ] Import 3d Models
+  - [ ] Triangle class (way to draw triangle elegantly)
+  - [ ] Do Blinn-Phong Lighting system
+  - [ ] Particle system
