@@ -307,32 +307,43 @@ inline mat4 look_at(vec3 eye, vec3 center, vec3 up)
     vec3 w = norm(eye - center); // CAMERA Z
     vec3 u = norm(cross(norm(up),w)); // CAMERA X
     vec3 v = cross(w,u); // CAMERA Y
-    float pu = dot(v, eye);
-    float ps = dot(u, eye);
+    float pv = dot(v, eye);
+    float pu = dot(u, eye);
     float pw = dot(w, eye);
     return {
-        u.x, u.y, u.z, -ps,
-        v.x, v.y, v.z, -pu,
+        u.x, u.y, u.z, -pu,
+        v.x, v.y, v.z, -pv,
         w.x, w.y, w.z, -pw,
         0.f, 0.f, 0.f, 1.f,
     };
 }
 
-// reference: https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+// reference: https://docs.gl/gl3/glFrustum
+// reference: https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/opengl-perspective-projection-matrix.html
 inline mat4 perspective(float fov, float aspect, float near, float far)
 {
-    float a,b,c,d,e,f;
-    a = tanf(fov / 2.f);
-    b = 1.f / (a * aspect);
-    c = 1.f / a;
-    d = -(far + near) / (far - near);
-    e = -1.f;
-    f = -(2.f * far * near) / (far - near);
+
+    float top = near * tan(fov * 0.5);
+    float bottom = -top;
+    float right = top * aspect;
+    float left = -right;
+
+    // TODO: Implement frustum function so the below operation can be refactored as
+    // frustum(left, right, bottom, top, near, far)
+
+    float a,b,c,d,e,f,g;
+    a = (near * 2.0f) / (right - left);
+    b = (near * 2.0f) / (top - bottom);
+    c = (right + left) / (right - left);
+    d = (top + bottom) / (top - bottom);
+    e = -(far + near) / (far - near);
+    f = -1.0f;
+    g = -(far * near * 2.0f) / (far - near);
     return {
-        b,0,0,0,
-        0,c,0,0,
-        0,0,d,f,
-        0,0,e,0
+        a, 0, c, 0,
+        0, b, d, 0,
+        0, 0, e, g,
+        0, 0, f, 0,
     };
 }
 
