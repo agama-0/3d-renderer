@@ -19,19 +19,19 @@ namespace agama {
 struct Camera {
     private:
     alm::vec3 position;
-
+    alm::vec3 world_up;
     float yaw;
     float pitch;
     float zoom;
     float aspect;
 
     public:
-    alm::vec3 world_up;
     Camera();
     ~Camera();
     alm::vec3 get_front();
     alm::vec3 get_up();
     alm::vec3 get_right();
+    alm::vec3 get_target();
     alm::mat4 get_view();
     alm::mat4 get_projection(float near = CAMERA_DEFAULT_NEAR, float far = CAMERA_DEFAULT_FAR);
     void move_forward(float delta, float speed);

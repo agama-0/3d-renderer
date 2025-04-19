@@ -36,10 +36,16 @@ Camera::get_up()
     return alm::norm(alm::cross(get_right(), get_front()));
 }
 
+alm::vec3
+Camera::get_target()
+{
+    return position + get_front();
+}
+
 alm::mat4
 Camera::get_view()
 {
-    return alm::look_at(position, position + get_front(), get_up());
+    return alm::look_at(position, get_target(), get_up());
 }
 
 alm::mat4
@@ -105,13 +111,3 @@ Camera::set_aspect(int w, int h)
 {
     aspect = (float)w / (float)h;
 }
-
-// Reset mouse coordinates to center-of-screen on each frame, so that mouse never gets caught on the screen borders
-
-// Maintain the camera's "up" vector (disallow roll) and recompute the "right" vector
-
-// Disallow looking up past the vertical +y axis, or down past the -y axis (too far up/down)
-
-// Get the order of rotations correct (up/down first, then left/right)
-
-// Renormalize the "up", "target", and "right" vectors each frame

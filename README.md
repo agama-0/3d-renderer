@@ -20,7 +20,7 @@
 
 ## Output Recording
 
-![](output/recording.gif)
+![](output/recording_2.gif)
 
 
 ## RoadMap
@@ -31,9 +31,11 @@
   - [x] Create VBO for triangle and draw two of them
   - [x] Implement Camera System
   - [x] Rotate that shit
-  - [ ] Texture (UV coords and glTexture2d)
-  - [ ] Way to dynamically spawn cubes on mouse click
+- **Draw 3d Models with lighting**
+  - [x] Texture (UV coords and glTexture2d)
+  - [x] Way to dynamically spawn cubes on mouse click
   - [ ] Import 3d Models
   - [ ] Triangle class (way to draw triangle elegantly)
   - [ ] Do Blinn-Phong Lighting system
+- **Implement a particle system**
   - [ ] Particle system

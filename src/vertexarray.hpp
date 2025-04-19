@@ -7,6 +7,7 @@ namespace agama {
 struct Vertex {
     alm::vec3 position;
     alm::vec3 color;
+    alm::vec2 uv;
 };
 class VertexArray
 {
